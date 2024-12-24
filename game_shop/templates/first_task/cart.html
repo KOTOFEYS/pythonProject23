@@ -1,0 +1,17 @@
+{% extends "first_task/menu.html" %}
+
+{% block title%}
+    {{ title }} - {{ block.super }}
+{% endblock %}
+
+{% block pagename %}
+    <h1>{{ text }}</h1>
+{% endblock %}
+
+{% block menu %}
+    {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <h3>{{ text1 }}</h3>
+{% endblock %}
