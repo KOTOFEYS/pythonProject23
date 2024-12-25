@@ -1,57 +1,68 @@
-from django.shortcuts import render
-from http.client import HTTPResponse
 from django.http import HttpResponse
 from django.shortcuts import render
-from .form import UserRegister
+from .forms import UserRegister
 from .models import Buyer, Game
+
+
 # Create your views here.
+
+
 
 def sign_up_by_html(request):
     buyers = Buyer.objects.all()
+    users = [buyer.name for buyer in buyers]
     info = {}
 
     if request.method == 'POST':
-        name = request.POST.get('name')
+        username = request.POST.get('username')
         password = request.POST.get('password')
         repeat_password = request.POST.get('repeat_password')
         age = request.POST.get('age')
-        for name in buyers:
-            if password == repeat_password and int(age) >= 18 and name not in buyers:
-                Buyer.object.create(name='name', age=int(age))
-                return HttpResponse(f"Приветствуем, {name}!")
-        if password != repeat_password:
-            info.update({'error': 'Пароли не совпадают'})
-        if int(age) < 18:
-            info.update({'error': 'Вы должны быть старше 18'})
-        if name in buyers:
+        # for buyer in buyers:
+        if password == repeat_password and int(age) >= 18 and username not in users:
+            Buyer.objects.create(name=username,balance= 1000, age=int(age))
+            return HttpResponse(f"Приветствуем, {username}!")
+        if username in users:
             info.update({'error': 'Пользователь уже существует'})
+        if password != repeat_password:
+                info.update({'error': 'Пароли не совпадают'})
+        if int(age) < 18:
+                info.update({'error': 'Вы должны быть старше 18'})
+
     return render(request, 'first_task/registration_page.html', context={'info': info,})
+
+
+
+
+
 
 def sign_up_by_django(request):
     buyers = Buyer.objects.all()
+    users = [buyer.name for buyer in buyers]
     info = {}
-    # form = UserRegister()
+    form = UserRegister()
     if request.method == 'POST':
         form = UserRegister(request.POST)
         if form.is_valid():
-            name = form.cleaned_data['name']
+            username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             repeat_password = form.cleaned_data['repeat_password']
             age = form.cleaned_data['age']
-            if password == repeat_password and int(age) >= 18 and name not in buyers:
-                Buyer.object.create(name='name', age='age')
-                return HttpResponse(f"Приветствуем, {name}!")
+            if password == repeat_password and int(age) >= 18 and username not in users:
+                Buyer.objects.create(name=username,balance= 1000, age=int(age))
+                return HttpResponse(f"Приветствуем, {username}!")
             if password != repeat_password:
-                info.update({'ERROR1': 'Пароли не совпадают'})
+                info.update({'error': 'Пароли не совпадают'})
             if int(age) < 18:
-                info.update({'ERROR2': 'Вы должны быть старше 18'})
-            if name in buyers:
-                info.update({'ERROR3': 'Пользователь уже существует'})
-        else:
-            form = UserRegister()
-    return render(request, 'first_task/registration_page.html', context={'info': info, })
+                info.update({'error': 'Вы должны быть старше 18'})
+            if username in users:
+                info.update({'error': 'Пользователь уже существует'})
 
-# Create your views here.
+    else:
+        form = UserRegister()
+    return render(request, 'first_task/registration_page.html', context={'info': info,})
+
+
 def home(requests):
     title = 'Детский магазин "МЕДВЕЖЁНОК"'
     text = 'Главная страница'
@@ -64,15 +75,8 @@ def home(requests):
 
 
 def shop(requests):
-    title = 'Детские товары'
-    text = 'Детские товары'
-    list_shop = ['Велосипед', 'Кукла', 'Конструктор']
-    context = {
-        'title': title,
-        'text': text,
-        'list_shop': list_shop
-    }
-    return render(requests, 'first_task/games.html', context)
+    games = Game.objects.all()
+    return render(requests, 'first_task/games.html', context={'games': games})
 
 
 def basket(requests):

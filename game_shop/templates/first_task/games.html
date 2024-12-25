@@ -13,7 +13,10 @@
 {% endblock %}
 
 {% block content %}
-    {% for i in list_shop %}
-        <li>{{ i }}<button>Купить</button></li>
+<ul>
+    {% for game in games %}
+        <li>{{ game.title }}|{{ game.description }}| Стоимость: {{ game.cost }}
+            <button>Купить</button></li>
     {% endfor %}
+</ul>
 {% endblock %}
