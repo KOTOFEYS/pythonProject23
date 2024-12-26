@@ -64,7 +64,7 @@ def sign_up_by_django(request):
 
 
 def home(requests):
-    title = 'Детский магазин "МЕДВЕЖЁНОК"'
+    title = 'Магазин компьютерных игр"'
     text = 'Главная страница'
 
     context = {
