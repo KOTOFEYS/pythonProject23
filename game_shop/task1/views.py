@@ -1,7 +1,8 @@
+from django.core.paginator import Paginator
 from django.http import HttpResponse
 from django.shortcuts import render
 from .forms import UserRegister
-from .models import Buyer, Game
+from .models import Buyer, Game, News
 
 
 # Create your views here.
@@ -90,5 +91,12 @@ def basket(requests):
         'text1': text1
     }
     return render(requests, 'first_task/cart.html', context)
-# def parent(requests):
-#     return render(requests, 'first_task/menu.html')
+
+
+def news(requests):
+    news_List = News.objects.all()
+    paginator = Paginator(news_List,3)
+    page_number = requests.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(requests, 'first_task/news.html', context = {'news':page_obj})
